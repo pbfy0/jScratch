@@ -5,9 +5,9 @@
 <script src="rgb.js"></script>
 <script src="scratch.js"></script>
 </head>
-<body onload="window.world = new World([{name: 'a', costumes: ['greenflag.png', 'stopsign.png']}, {name: 'b', costumes: ['stopsign.png']}])">
+<body onload="window.world = new World([{name: 'a', costumes: ['greenflag.png', 'stopsign.png']}, {name: 'b', costumes: ['stopsign.png']}])" onmousemove="keymouse.mousemove(event)" onmousedown="keymouse.mousedown(event)" onmouseup="keymouse.mouseup(event)" onkeypress="keymouse.keypress(event)" onkeyup="keymouse.keyup(event)" style="height: 360px; width: 480px; overflow-x: hidden; overflow-y: hidden">
 <canvas width="480" height="360" id="stage"></canvas>
-<div style="position: relative; top: -60px; left: 15px; display: none" id="ask">
+<div style="position: relative; top: -60px; left: 15px; display: none; height: 55px; width: 480px; overflow-x: hidden; overflow-y: hidden" id="ask">
 <map name="check">
 <area shape="circle" coords="433,35,9" href="javascript:window.asker.__callback()"/>
 </map>
