@@ -442,8 +442,10 @@ function Sprite(name, costumes, world){
 	this.__callback = function(){
 		var ask = document.getElementById('ask');
 		document.getElementById('ask').style.display = 'none';
-		this.answer = document.getElementById('inp').value;
-		this._callback(this.answer);
+		var inp = document.getElementById('inp');
+		this._answer = inp.value;
+		inp.value = "";
+		this._callback(this._answer);
 	}
 	this.ask = function(q, c){
 		var ask = document.getElementById("ask");
@@ -455,10 +457,9 @@ function Sprite(name, costumes, world){
 		window.asker = this;
 		ask.style.display = "";
 		qe.innerHTML = q;
-		
 	}
 	this.askInDialog = function(q){
-		return prompt(q, "");
+		this._answer = prompt(q, "");
 	}
 	this.answer = function(){
 		return this._answer;
