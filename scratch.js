@@ -2,22 +2,44 @@
 var globalvars = [];
 var globalcolors = [];*/
 
-function radians(d){
-	return d*Math.PI/180;
+Date.prototype.getDOY = function() {
+var onejan = new Date(this.getFullYear(),0,1);
+return Math.ceil((this - onejan) / 86400000);
 }
 
-function degrees(r){
-	return r/Math.PI*180;
-}
-
-function isArray(o){
-	try{
-		o.join("");
-		return true;
-	}catch(e){
+window.util = {
+	radians: function(d){
+		return d*Math.PI/180;
+	},
+	degrees: function(r){
+		return r/Math.PI*180;
+	},
+	isArray: function(o){
+		try{
+			o.join("");
+			return true;
+		}catch(e){
+			return false;
+		}
 		return false;
-	}
-	return false;
+	},
+	strm: function(str, f){
+		return (new Array(f + 1)).join(str);
+	},
+	pad: function(n, nop){
+		if(nop === undefined){nop = 2}
+		return this.strm("0", nop - String(n).length) + n;
+	},
+	factorial: function(n){
+		if(typeof n == 'string') n = Number(n);
+		if(typeof n != 'number' || isNaN(n)){
+			return 0;
+		}
+		if (n < 2) return 1;
+		return (n * this.factorial(n-1));
+	},
+	months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+	days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 }
 
 window.keymouse = {
@@ -50,14 +72,14 @@ window.keymouse = {
 };
 function Costume(image){
 //		console.log("b", image);
-	if(isArray(image)){
+	if(util.isArray(image)){
 		var i;
 		this.i = [];
 		for(i in image){
 			this.i.push(new Costume(image[i]));
 		}
 		this.c = 0;
-		this.pos = {x: 0, y: 0, r: 0, w: 100, h: 100};
+		this.pos = {x: 0, y: 0, r: 0, w: 1, h: 1};
 		this.visibility = true;
 		this.__defineGetter__("current", function(){return this.i[this.c]});
 		this.__defineSetter__("current", function(v){this.i[this.c] = v});
@@ -95,7 +117,7 @@ function Renderer(canvas, world){
 			this.ctx.save();
 			this.ctx.translate(pos.x + cur.w / 2, pos.y + cur.h / 2);
 			this.ctx.rotate(pos.r);
-			this.ctx.drawImage(cur.image, 0, 0, pos.w/100 * cur.w, pos.h/100 * cur.h);
+			this.ctx.drawImage(cur.image, 0, 0, pos.w * cur.w, pos.h * cur.h);
 //			this.ctx.rotate(pos.r);
   //                      this.ctx.translate(-cur.w / 2, -cur.h / 2);
 			this.ctx.restore();
@@ -109,7 +131,7 @@ function Renderer(canvas, world){
 			this.ctx.save();
 			this.ctx.translate(pos.x + cur.w / 2, pos.y + cur.h / 2);
 			this.ctx.rotate(pos.r);
-			this.ctx.drawImage(cur.image, 0, 0, pos.w/100 * cur.w, pos.h/100 * cur.h);
+			this.ctx.drawImage(cur.image, 0, 0, pos.w * cur.w, pos.h * cur.h);
 //			this.ctx.rotate(-radians(s.r));
 //			this.ctx.translate(-s.w / 2, -s.h / 2);
 			this.ctx.restore();
@@ -147,6 +169,7 @@ function World(lsprites){
 	this.globals = [];
 	this.lines = [];
 	this.stamps = [];
+	this.timer = new Date();
 	for(i in lsprites){
 //		console.log(lsprites[i]);
 		this.sprites.push(new Sprite(lsprites[i].name, lsprites[i].costumes, this));
@@ -494,5 +517,105 @@ function Sprite(name, costumes, world){
 	}
 	this.showDialog = function(s){
 		alert(s);
+	}
+	this.mouseX = function(){
+		return keymouse.mousepos[0];
+	}
+	this.mouseY = function(){
+		return keymouse.mousepos[1];
+	}
+	this.mouseDown = function(){
+		return keymouse.mouseisdown;
+	}
+	this.keyKPressed = function(k){
+		return !!(mousedown.keychar == k);
+	}
+	this.resetTimer = function(){
+		this.stage.timer = new Date();
+	}
+	this.timer = function(){
+		var nt = new Date();
+		return (nt.getTime() - this.stage.timer.getTime()) / 1000;
+	}
+	this.ofSprite = function(p, s){
+	switch(p){
+		case "x position":
+			return s.costumes.pos.x;
+		case "y position":
+			return s.costumes.pos.y;
+		case "direction":
+			return s.costumes.pos.r;
+		case "costume #":
+			return s.costumes.c;
+		case "size":
+			return Math.sqrt(s.costumes.w * s.costumes.h);
+		case "volume":
+			return s.volume;
+		}
+	}
+	this.dateTime = function(t){
+		var d = new Date();
+		switch(t){
+		case "time":
+			var h = d.getHours();
+			var s = h <= 12 ? "am" : "pm";
+			h %= 12;
+			return h + ":" + util.pad(d.getMinutes()) + ":" + util.pad(d.getSeconds()) + " " + s;
+		case "hour":
+			return util.pad(d.getHours());
+		case "minute":
+			return util.pad(d.getMinutes());
+		case "second":
+			return util.pad(d.getSeconds());
+		case "date":
+			return d.getDate() + " " + util.months[d.getMonth()] + " " + d.getFullYear();
+		case "day of month":
+			return d.getDate();
+		case "day of year":
+			return d.getDOY();
+		case "weekday-name":
+			return util.days[d.getDay() - 1];
+		case "weekday-#":
+			return d.getDay() + 1;
+		case "month-name":
+			return util.months[d.getMonth()];
+		case "month-#":
+			return d.getMonth() + 1;
+		case "year":
+			return d.getFullYear();
+		}
+	}
+	this.pickRandom = function(from, to){
+		var t = Math.random() * ((to - from) + 1);
+		return Math.floor(t) + from;
+	}
+	this.join = function(){
+		return Array.prototype.slice.call(arguments).join("");
+//		return String(a) + String(b);
+	}
+	this.letterOf = function(l, s){
+		return s.substr(l-1,1);
+	}
+	this.lettersOf = function(l, n, s){
+		return s.substr(l-1, n);
+	}
+	this.indexOfStartingAt = function(f, st, s){
+		return s.indexOf(f, st - 1) + 1;
+	}
+	this.lengthOf = function(s){
+		return String(s).length;
+	}
+	this.mod = function(n, m){
+		return n % m;
+	}
+	this.round = function(n){
+		return Math.round(Number(n));
+	}
+	this.opOf = function(op, n){
+	switch(op){
+	case "factorial":
+		return util.factorial(n);
+	}
+	return 0;
 	}
 }

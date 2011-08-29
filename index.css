@@ -1,0 +1,41 @@
+body {
+        height: 380px;
+        width: 480px;
+	border: 1px solid #d0d0d0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+}
+#ask {
+        position: relative; 
+        top: -60px; left: 15px;
+        display: none;
+        height: 55px;
+        width: 480px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+}
+#inp {
+	position: relative;
+	top: -34px;
+	left: 8px;
+	border: none;
+}
+#question {
+	font-size: 14px;
+	position: relative;
+	top: -77px;
+	left: 10px;
+}
+#header {
+	width: 476px;
+	height: 20px;
+	padding-top: 2px;
+	padding-left: 4px;
+	background-color: #d0d0d0;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+#banner {
+	padding-left: 125px;
+	font-family: verdana,helvetica,arial,sans-serif;
+}
