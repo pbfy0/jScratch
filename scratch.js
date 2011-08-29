@@ -39,7 +39,10 @@ window.util = {
 		return (n * this.factorial(n-1));
 	},
 	months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-	days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+	days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+	lsort: function(a,b){
+		return a.costumes.layer - b.costumes.layer;
+	}
 }
 
 window.keymouse = {
@@ -80,6 +83,7 @@ function Costume(image){
 		}
 		this.c = 0;
 		this.pos = {x: 0, y: 0, r: 0, w: 1, h: 1};
+		this.layer = 0;
 		this.visibility = true;
 		this.__defineGetter__("current", function(){return this.i[this.c]});
 		this.__defineSetter__("current", function(v){this.i[this.c] = v});
@@ -109,33 +113,6 @@ function Renderer(canvas, world){
 		var i;
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 //		window.x = this;
-		for(i in this.world.sprites){
-			var c = this.world.sprites[i].costumes;
-			if(!c.visibility){continue}
-			var pos = c.pos;
-			var cur = c.current;
-			this.ctx.save();
-			this.ctx.translate(pos.x + cur.w / 2, pos.y + cur.h / 2);
-			this.ctx.rotate(pos.r);
-			this.ctx.drawImage(cur.image, 0, 0, pos.w * cur.w, pos.h * cur.h);
-//			this.ctx.rotate(pos.r);
-  //                      this.ctx.translate(-cur.w / 2, -cur.h / 2);
-			this.ctx.restore();
-		}
-		for(i in this.world.stamps){
-			var s = this.world.stamps[i];
-			window.x = s;
-//                        if(!s.visibility){continue}
-			var pos = s.pos;
-			var cur = s.current;
-			this.ctx.save();
-			this.ctx.translate(pos.x + cur.w / 2, pos.y + cur.h / 2);
-			this.ctx.rotate(pos.r);
-			this.ctx.drawImage(cur.image, 0, 0, pos.w * cur.w, pos.h * cur.h);
-//			this.ctx.rotate(-radians(s.r));
-//			this.ctx.translate(-s.w / 2, -s.h / 2);
-			this.ctx.restore();
-		}
 		for(i in this.world.lines){
 			var l = this.world.lines[i];
 			this.ctx.beginPath();
@@ -146,7 +123,34 @@ function Renderer(canvas, world){
 			this.ctx.stroke();
 //			this.lines.splice(i, 1);
 		}
-		
+		for(i in this.world.stamps){
+			var s = this.world.stamps[i];
+			window.x = s;
+                        if(!s.visibility){continue}
+			var pos = s.pos;
+			var cur = s.current;
+			this.ctx.save();
+			this.ctx.translate(pos.x + cur.w / 2, pos.y + cur.h / 2);
+			this.ctx.rotate(pos.r);
+			this.ctx.drawImage(cur.image, 0, 0, pos.w * cur.w, pos.h * cur.h);
+//			this.ctx.rotate(-radians(s.r));
+//			this.ctx.translate(-s.w / 2, -s.h / 2);
+			this.ctx.restore();
+		}
+		var spr = this.world.sprites.slice().sort(util.lsort);
+		for(i in spr){
+			var c = spr[i].costumes;
+			if(!c.visibility){continue}
+			var pos = c.pos;
+			var cur = c.current;
+			this.ctx.save();
+			this.ctx.translate(pos.x + cur.w / 2, pos.y + cur.h / 2);
+			this.ctx.rotate(pos.r);
+			this.ctx.drawImage(cur.image, 0, 0, pos.w * cur.w, pos.h * cur.h);
+//			this.ctx.rotate(pos.r);
+  //                      this.ctx.translate(-cur.w / 2, -cur.h / 2);
+			this.ctx.restore();
+		}		
 	};
 	this.intervalRender = function(that){
 		that.render();
@@ -166,9 +170,10 @@ function World(lsprites){
 	var i;
 	this.sprites = [];
 	this.sounds = [];
-	this.globals = [];
+	this.vars = [];
 	this.lines = [];
 	this.stamps = [];
+	this.greenflag = [];
 	this.timer = new Date();
 	for(i in lsprites){
 //		console.log(lsprites[i]);
@@ -180,8 +185,15 @@ function World(lsprites){
 	this.stamp = function(s){
 		this.stamps.push(s);
 	}
+	this.greenflagClicked = function(){
+		var i;
+		for(i in this.greenflag){
+			setTimeout(this.greenflag[i], 0);
+		}
+	}
 	this.renderer = new Renderer(document.getElementById("stage"), this);
 	this.renderer.start();
+	window.world = this;
 }
 function Sprite(name, costumes, world){
 	this.name = name;
@@ -492,7 +504,7 @@ function Sprite(name, costumes, world){
 	}
 	this.__callback = function(){
 		var ask = document.getElementById('ask');
-		document.getElementById('ask').style.display = 'none';
+		document.getElementById('ask').style.display = '';
 		var inp = document.getElementById('inp');
 		this._answer = inp.value;
 		inp.value = "";
@@ -500,13 +512,13 @@ function Sprite(name, costumes, world){
 	}
 	this.ask = function(q, c){
 		var ask = document.getElementById("ask");
-		ask.style.display = "";
+//		ask.style.display = "block";
 		var qe = document.getElementById("question");
 		var inp = document.getElementById("inp");
 		this._callback = c;
 		inp.focus()
 		window.asker = this;
-		ask.style.display = "";
+		ask.style.display = "block";
 		qe.innerHTML = q;
 	}
 	this.askInDialog = function(q){
@@ -612,10 +624,149 @@ function Sprite(name, costumes, world){
 		return Math.round(Number(n));
 	}
 	this.opOf = function(op, n){
-	switch(op){
-	case "factorial":
-		return util.factorial(n);
+		switch(op){
+		case "factorial":
+			return util.factorial(n);
+		case "abs":
+			return Math.abs(n);
+		case "sqrt":
+			return Math.sqrt(n);
+		case "sin":
+			return Math.sin(n);
+		case "cos":
+			return Math.cos(n);
+		case "tan":
+			return Math.tan(n);
+		case "asin":
+			return Math.asin(n);
+		case "acos":
+			return Math.acos(n);
+		case "atan":
+			return Math.atan(n);
+		case "atan2":
+			return Math.atan2(n);
+		case "ln":
+			return Math.log(n);
+		case "log:
+			return Math.log(n) / Math.LN10;
+		case "e ^":
+			return Math.exp(n);
+		case "10 ^":
+			return Math.pow(10, n);
+		}
+		return 0;
 	}
-	return 0;
+	this.constant = function(c){
+		switch(t1){
+		case "e":
+			return Math.E;
+		case "pi":
+			return Math.PI;
+		case "newline":
+			return "\n";
+		case "tab":
+			return "\t";
+		}
+	}
+	this.getVar = function(n){
+		if(this.vars[n] !== undefined){
+			return this.vars[n];
+		}else{
+			return this.stage.vars[n];
+		}
+	}
+	this.setVar = function(n, v){
+		if(this.vars[n] !== undefined){
+			this.vars[n] = v;
+		}else{
+			this.stage.vars[n] = v;
+		}
+	}
+	this.changeVar = function(n, v){
+		if(this.vars[n] !== undefined){
+			this.vars[n] += v;
+		}else{
+			this.stage.vars[n] += v;
+		}
+	}
+	this.createVar = function(n, t){
+		if(t){
+			this.vars[n] = "";
+		}else{
+			this.stage.vars[n] = "";
+		}
+	}
+	this.deleteVar = function(n){
+		if(this.vars[n] !== undefined){
+			delete this.vars[n];
+		}else{
+			delete this.stage.vars[n];
+		}
+	}
+	this.getList = this.getVar;
+	this.addToList = function(n, v){
+		if(this.vars[n] !== undefined){
+			this.vars[n].push(v);
+		}else{
+			this.stage.vars[n].push(v);
+		}
+	}
+	this.deleteOfList = function(n, i){
+		if(this.vars[n] !== undefined){
+			this.vars[n].splice(i - 1);
+		}else{
+			this.stage.vars[n].splice(i - 1);
+		}
+	}
+	this.insertInList = function(n, i, v){
+		if(this.vars[n] !== undefined){
+			this.vars[n].splice(i - 1, 0, v);
+		}else{
+			this.stage.vars[n].splice(i - 1, 0, v);
+		}
+	}
+	this.replaceItemOfList(n, i, v){
+		if(this.vars[n] !== undefined){
+			this.vars[n][i] = v;
+		}else{
+			this.stage.vars[n][i] = v;
+		}
+	}
+	this.getItemOfList(n, i){
+		if(this.vars[n] !== undefined){
+			return this.vars[n][i];
+		}else{
+			return this.stage.vars[n][i];
+		}
+	}
+	this.lengthOfList(n){
+		if(this.vars[n] !== undefined){
+			return this.vars[n].length;
+		}else{
+			return this.stage.vars[n].length;
+		}
+	}
+	this.getColor = this.getVar;
+	this.setColor = this.setVar;
+	this.colorFromRGB = function(r, g, b){
+		return [r, g, b];
+	}
+	this.redOf = function(c){
+		return c[0];
+	}
+	this.greenOf = function(c){
+		return c[1];
+	}
+	this.blueOf = function(c){
+		return c[2];
+	}
+	this.hueOf = function(c){
+		return rgbToHsv(c)[0];
+	}
+	this.satOf = function(c){
+		return rgbToHsv(c)[1];
+	}
+	this.valOf = function(c){
+		return rgbToHsv(c)[2];
 	}
 }

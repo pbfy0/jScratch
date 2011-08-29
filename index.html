@@ -6,16 +6,16 @@
 <script src="scratch.js"></script>
 <link rel="stylesheet" type="text/css" href="index.css" />
 </head>
-<body onload="window.world = new World([{name: 'a', costumes: ['greenflag.png', 'stopsign.png']}, {name: 'b', costumes: ['stopsign.png']}])" onmousemove="keymouse.mousemove(event)" onmousedown="keymouse.mousedown(event)" onmouseup="keymouse.mouseup(event)" onkeypress="keymouse.keypress(event)" onkeyup="keymouse.keyup(event)">
+<body onload="new World([{name: 'a', costumes: ['greenflag.png', 'stopsign.png']}, {name: 'b', costumes: ['stopsign.png']}])" onmousemove="keymouse.mousemove(event)" onmousedown="keymouse.mousedown(event)" onmouseup="keymouse.mouseup(event)" onkeypress="keymouse.keypress(event)" onkeyup="keymouse.keyup(event)">
 <div id="header">
-<img src="greenflag.png" />
-<img src="stopsign.png" />
+<img src="greenflag.png" onclick="world.greenflagClicked()" />
+<img src="stopsign.png" onclick="world.renderer.stop()"/>
 <span id="banner">HTML5 Scratch viewer</span>
 </div>
 <canvas width="480" height="360" id="stage"></canvas>
-<div style="position: relative; top: -60px; left: 15px; display: none; height: 55px; width: 480px; overflow-x: hidden; overflow-y: hidden">
+<div id="ask">
 <map name="check">
-<area shape="circle" coords="433,35,9" href="javascript:window.asker.__callback()"/>
+<area shape="circle" coords="433,35,9" onclick="window.asker.__callback()"/>
 </map>
 <img src="askmain.png" usemap="#check" alt="&#10003;"/><br />
 <input type="text" size="63" id="inp" />
