@@ -20,6 +20,34 @@ function isArray(o){
 	return false;
 }
 
+window.keymouse = {
+	mousepos: [0, 0],
+	mouseisdown: false,
+	keyisdown: false,
+	keychar: 0,
+	keycode: 0,
+	mousemove: function(ev){
+		this.mousepos = [ev.pageX, ev.pageY];
+	},
+	mousedown: function(){this.mouseisdown = true},
+	mouseup: function(){this.mouseisdown = false},
+	keypresses: {},
+	keypress: function(e){
+		this.keyisdown = true;
+		this.keychar = String.fromCharCode(e.charCode);
+		this.keycode = e.keyCode;
+		if(this.keypresses[e.keyCode]){
+			var i;
+			for(i in this.keypresses[e.keyCode]){
+				this.keypresses[e.keyCode][i]();
+			}
+		}
+	},
+	keyup: function(){
+		this.keyisdown = false;
+		this.keychar = this.keycode = 0;
+	}
+};
 function Costume(image){
 //		console.log("b", image);
 	if(isArray(image)){
