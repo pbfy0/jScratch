@@ -185,6 +185,9 @@ function World(lsprites){
 	this.stamp = function(s){
 		this.stamps.push(s);
 	}
+	this.greenFlagRegister = function(f){
+		this.greenflag.push(f);
+	}
 	this.greenflagClicked = function(){
 		var i;
 		for(i in this.greenflag){

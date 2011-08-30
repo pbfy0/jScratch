@@ -4,9 +4,10 @@
 <title>Scratch</title>
 <script src="rgb.js"></script>
 <script src="scratch.js"></script>
+<script src="project.js"></script>
 <link rel="stylesheet" type="text/css" href="index.css" />
 </head>
-<body onload="new World([{name: 'a', costumes: ['greenflag.png', 'stopsign.png']}, {name: 'b', costumes: ['stopsign.png']}])" onmousemove="keymouse.mousemove(event)" onmousedown="keymouse.mousedown(event)" onmouseup="keymouse.mouseup(event)" onkeypress="keymouse.keypress(event)" onkeyup="keymouse.keyup(event)">
+<body onload="start()" onmousemove="keymouse.mousemove(event)" onmousedown="keymouse.mousedown(event)" onmouseup="keymouse.mouseup(event)" onkeypress="keymouse.keypress(event)" onkeyup="keymouse.keyup(event)">
 <div id="header">
 <img src="greenflag.png" onclick="world.greenflagClicked()" />
 <img src="stopsign.png" onclick="world.renderer.stop()"/>
