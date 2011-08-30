@@ -647,7 +647,7 @@ function Sprite(name, costumes, world){
 			return Math.atan2(n);
 		case "ln":
 			return Math.log(n);
-		case "log:
+		case "log":
 			return Math.log(n) / Math.LN10;
 		case "e ^":
 			return Math.exp(n);
@@ -657,7 +657,7 @@ function Sprite(name, costumes, world){
 		return 0;
 	}
 	this.constant = function(c){
-		switch(t1){
+		switch(c){
 		case "e":
 			return Math.E;
 		case "pi":
@@ -704,6 +704,10 @@ function Sprite(name, costumes, world){
 		}
 	}
 	this.getList = this.getVar;
+	this.createList = function(n, t){
+		this.createVar(n, t);
+		this.setVar(n, []);
+	}
 	this.addToList = function(n, v){
 		if(this.vars[n] !== undefined){
 			this.vars[n].push(v);
@@ -725,21 +729,21 @@ function Sprite(name, costumes, world){
 			this.stage.vars[n].splice(i - 1, 0, v);
 		}
 	}
-	this.replaceItemOfList(n, i, v){
+	this.replaceItemOfList = function(n, i, v){
 		if(this.vars[n] !== undefined){
-			this.vars[n][i] = v;
+			this.vars[n][i - 1] = v;
 		}else{
-			this.stage.vars[n][i] = v;
+			this.stage.vars[n][i - 1] = v;
 		}
 	}
-	this.getItemOfList(n, i){
+	this.getItemOfList = function(n, i){
 		if(this.vars[n] !== undefined){
-			return this.vars[n][i];
+			return this.vars[n][i - 1];
 		}else{
-			return this.stage.vars[n][i];
+			return this.stage.vars[n][i - 1];
 		}
 	}
-	this.lengthOfList(n){
+	this.lengthOfList = function(n){
 		if(this.vars[n] !== undefined){
 			return this.vars[n].length;
 		}else{
