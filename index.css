@@ -2,8 +2,9 @@ body {
         height: 382px;
         width: 480px;
 	border: 1px solid #d0d0d0;
-        overflow-x: hidden;
-        overflow-y: hidden;
+/*        overflow-x: hidden;
+        overflow-y: hidden;*/
+	margin-bottom: 0px;
 }
 #ask {
         position: relative; 
@@ -36,6 +37,6 @@ body {
 	border-bottom-right-radius: 3px;
 }
 #banner {
-	padding-left: 125px;
+	margin-left: 125px;
 	font-family: verdana,helvetica,arial,sans-serif;
 }
