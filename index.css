@@ -10,23 +10,35 @@ body {
         position: relative; 
         top: -60px; left: 15px;
         display: none;
-        height: 55px;
-        width: 480px;
-        overflow-x: hidden;
-        overflow-y: hidden;
+        width: 442px;
+	border: 3px solid #4fafda;
+	border-radius: 7px;
+	padding-left: 3px;
+	padding-bottom: 2px;
 }
 #inp {
-	position: relative;
-	top: -34px;
-	left: 8px;
-	border: none;
+	background-color: #F2F2F2;
+	border-top: 2px solid #D5D5D5;
+	border-left: 2px solid #D5D5D5;
+	border-bottom: none;
+	border-right: none;
+	height: 20px;
 }
 #question {
-	font-size: 14px;
-	position: relative;
-	top: -77px;
-	left: 10px;
+	margin-top: 1px;
+	margin-left: 2px;
 }
+#check {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	background-color: #0494dc;
+	border-radius: 18px;
+	text-align: center;
+	color: #ffffff;
+	box-shadow: inset 0px 0px 5px white;
+}
+
 #header {
 	width: 476px;
 	height: 20px;

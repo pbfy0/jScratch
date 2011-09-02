@@ -15,11 +15,9 @@
 </div>
 <canvas width="480" height="360" id="stage"></canvas>
 <div id="ask">
-<map name="check">
-<area shape="circle" coords="433,35,9" onclick="window.asker.__callback()"/>
-</map>
-<img src="askmain.png" usemap="#check" alt="&#10003;"/><br />
-<input type="text" size="63" id="inp" />
 <div id="question"></div>
+<input type="text" size="63" id="inp">
+<span onclick="window.asker.__callback()" id="check">&#10003;</span>
+</div>
 </body>
 </html>
