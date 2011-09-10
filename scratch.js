@@ -73,9 +73,12 @@ window.keymouse = {
 		this.keychar = this.keycode = 0;
 	}
 };
-function Costume(image){
+function Costumes(image){
 //		console.log("b", image);
-	if(util.isArray(image)){
+	if(!util.isArray(image)){
+		image = [image];
+	}
+//	if(util.isArray(image)){
 		var i;
 		this.i = [];
 		for(i in image){
@@ -87,17 +90,18 @@ function Costume(image){
 		this.visibility = true;
 		this.__defineGetter__("current", function(){return this.i[this.c]});
 		this.__defineSetter__("current", function(v){this.i[this.c] = v});
-	}else{
-		//nsole.log(image);
-		this.image = new Image(); this.image.src = image;
-//		this.x = this.y = this.r = 0;
-		this.w = this.image.width;
-		this.h = this.image.height;
-	}
+//	}
+}
+function Costume(image){
+	//nsole.log(image);
+	this.image = new Image(); this.image.src = image;
+//	this.x = this.y = this.r = 0;
+	this.w = this.image.width;
+	this.h = this.image.height;
 }
 
 function Stamp(costume){
-	var c = new Costume([costume.current.image.src]);
+	var c = new Costumes([costume.current.image.src]);
 	c.pos = {x: costume.pos.x, y: costume.pos.y, r: costume.pos.r, w: costume.pos.w, h: costume.pos.h};
 	c.c = costume.c;
 	c.visibility = costume.visibility;
@@ -201,7 +205,7 @@ function World(lsprites){
 function Sprite(name, costumes, world){
 	this.name = name;
 	this.stage = world;
-	this.costumes = new Costume(costumes);
+	this.costumes = new Costumes(costumes);
 	this.vars = [];
 //	this.colors = [];
 	this.penColor = [0,0,0];
