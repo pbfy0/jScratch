@@ -52,3 +52,8 @@ body {
 	margin-left: 125px;
 	font-family: verdana,helvetica,arial,sans-serif;
 }
+#dstage {
+	width: 480px;
+	height: 360px;
+	display: none;
+}

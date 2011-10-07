@@ -108,7 +108,7 @@ function Stamp(costume){
 	return c;
 }
 
-function Renderer(canvas, world){
+function CanvasRenderer(canvas, world){
 	this.world = world;
 //	this.sprites = this.world.sprites;
 	this.canvas = canvas;
@@ -170,6 +170,7 @@ function Renderer(canvas, world){
 		clearInterval(this.intvl);
 	};
 }
+
 function World(lsprites){
 	var i;
 	this.sprites = [];
@@ -198,7 +199,7 @@ function World(lsprites){
 			setTimeout(this.greenflag[i], 0);
 		}
 	}
-	this.renderer = new Renderer(document.getElementById("stage"), this);
+	this.renderer = new CanvasRenderer(document.getElementById("stage"), this);
 	this.renderer.start();
 	window.world = this;
 }
